@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style>
+ul#menu li {
+    display:inline;
+}
+</style>
+</head>
+
+<body>
+
+
+<h1>HTML Web Element Example Page</h1>
+<p>by Tony venditti</p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>TextField</h2>
+<p>Text Field objects accept text input from end users.</p>
+
+</div>
+<p>
+
+
+First name:
+<input type="text" name="firstname">
+<br>
+Last name:
+<input type="text" name="lastname">
+<p>
+
+User name:
+<input type="text" name="username">
+<br>
+Password:
+<input type="password" name="psw">
+<p>
+
+
+First name:
+<input type="text" name="firstname" value="Mickey">
+<br>
+Last name:
+<input type="text" name="lastname" value="Mouse">
+<p>
+
+
+Browsers:
+<input list="browsers">
+<datalist id="browsers">
+  <option value="Internet Explorer">
+  <option value="Firefox">
+  <option value="Chrome">
+  <option value="Opera">
+  <option value="Safari">
+</datalist> 
+<p>
+
+<form>
+  Quantity (between 1 and 5):
+  <input type="number" name="quantity" min="1" max="5">
+</form>
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>TextArea</h2>
+<p>TextArea objects accept large amounts of text input from end users.</p>
+
+</div>
+<p>
+
+<textarea name="message" rows="10" cols="30">
+The cat was playing in the garden.
+</textarea>
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>RadioButton</h2>
+<p>Radiobutton objects allow users to select items that are mutually exclusive.</p>
+
+</div>
+<p>
+
+
+
+<input type="radio" name="sex" value="male" checked>Male
+<br>
+<input type="radio" name="sex" value="female">Female
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>CheckBox</h2>
+<p>CheckBox objects allow users to select several items in a list.</p>
+
+</div>
+<p>
+
+
+<input type="checkbox" name="vehicle" value="Bike">I have a bike
+<br>
+<input type="checkbox" name="vehicle" value="Car">I have a car 
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Button</h2>
+<p>Button objects allow users to trigger some action by clicking on the button.</p>
+
+</div>
+<p>
+
+<input type="button" onclick="alert('Try some TicTacs!')" value="Help">
+<p>
+
+<button type="button" onclick="alert('Hello World!')">Click Me!</button>
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Link</h2>
+<p>Link objects allow users to trigger some action by clicking on the Link object.</p>
+
+</div>
+<p>
+
+<!--><style>
+<!-->a:link    {color:#000000; background-color:transparent; text-decoration:none}
+<!-->a:visited {color:#000000; background-color:transparent; text-decoration:none}
+<!-->a:hover   {color:#ff0000; background-color:transparent; text-decoration:underline}
+<!-->a:active  {color:#ff0000; background-color:transparent; text-decoration:underline}
+<!--></style>
+
+<a href="http://www.w3schools.com/html/">Visit our HTML tutorial</a>
+<p>
+
+<a href="http://www.google.com">Google Search</a>
+<p>
+
+<a href="c:\\B24_updated files.jpg">HTML Images</a>
+<p>
+
+<a href="http://www.w3schools.com/" target="_blank">Visit W3Schools!</a>
+<p>
+
+<a href="default.asp">
+  <img src="smiley.gif" alt="HTML tutorial" style="width:42px;height:42px;border:0">
+</a>
+<p>
+
+<a id="tips">Useful Tips Section</a>
+<p>
+
+<a href="#tips">Visit the Useful Tips Section</a>
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>ListBox</h2>
+<p>ListBox objects allow users to select an item from a list of items.</p>
+
+</div>
+<p>
+
+<select name="cars">
+<option value="volvo">Volvo</option>
+<option value="saab">Saab</option>
+<option value="fiat">Fiat</option>
+<option value="audi">Audi</option>
+</select>
+<p>
+
+
+
+
+
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Table</h2>
+<p>Table objects display information within a contained column and row based structure.</p>
+
+</div>
+<p>
+
+<style>
+table, th, td {
+    border: 1px solid black;
+}
+</style>
+
+<table style="width:50%">
+  <tr>
+    <td>Jill</td>
+    <td>Smith</td> 
+    <td>50</td>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td> 
+    <td>94</td>
+  </tr>
+</table>
+<p>
+
+
+<table style="width:50%">
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th> 
+    <th>Points</th>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td> 
+    <td>94</td>
+  </tr>
+</table>
+<p>
+
+<table style="width:50%">
+  <tr>
+    <th>Name</th>
+    <th colspan="2">Telephone</th>
+  </tr>
+  <tr>
+    <td>Bill Gates</td>
+    <td>555 77 854</td>
+    <td>555 77 855</td>
+  </tr>
+</table>
+<p>
+
+<table style="width:50%">
+  <tr>
+    <th>Name:</th>
+    <td>Bill Gates</td>
+  </tr>
+  <tr>
+    <th rowspan="2">Telephone:</th>
+    <td>555 77 854</td>
+  </tr>
+  <tr>
+    <td>555 77 855</td>
+  </tr>
+</table>
+<p>
+
+<table style="width:50%">
+  <caption>Monthly savings</caption>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+  <tr>
+    <td>February</td>
+    <td>$50</td>
+  </tr>
+</table>
+<p>
+
+<table id="t01">
+  <tr>
+    <th>Firstname</th>
+    <th>Lastname</th> 
+    <th>Points</th>
+  </tr>
+  <tr>
+    <td>Eve</td>
+    <td>Jackson</td> 
+    <td>94</td>
+  </tr>
+</table>
+<p>
+
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Slider</h2>
+<p>Slider objects.</p>
+
+</div>
+<p>
+
+
+
+<form action="action_page.asp"
+oninput="x.value=parseInt(a.value)+parseInt(b.value)">
+0
+<input type="range"  id="a" name="a" value="50">
+100 +
+<input type="number" id="b" name="b" value="50">
+=
+<output name="x" for="a b"></output>
+</form>
+<p>
+
+<form>
+  <input type="range" name="points" min="0" max="10">
+</form>
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Date and Time Picker</h2>
+<p>Date and Time picker objects.</p>
+
+</div>
+<p>
+
+<form>
+  Birthday (month and year):
+  <input type="month" name="bdaymonth">
+</form>
+<p>
+
+<form>
+  Select a week:
+  <input type="week" name="week_year">
+</form>
+<p>
+
+<form>
+  Select a time:
+  <input type="time" name="usr_time">
+</form>
+<p>
+
+<form>
+  Birthday (date and time):
+  <input type="datetime" name="bdaytime">
+</form>
+<p>
+
+<form>
+  Birthday (date and time):
+  <input type="datetime-local" name="bdaytime">
+</form>
+<p>
+
+
+<form>
+  Birthday:
+  <input type="date" name="bday">
+</form>
+<p>
+
+<form>
+  Enter a date before 1980-01-01:
+  <input type="date" name="bday" max="1979-12-31"><br>
+  Enter a date after 2000-01-01:
+  <input type="date" name="bday" min="2000-01-02"><br>
+</form>
+<p>
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Color Picker</h2>
+<p>Color picker objects.</p>
+
+</div>
+<p>
+
+
+<form>
+  Select your favorite color:
+  <input type="color" name="favcolor">
+</form>
+<p>
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>Other</h2>
+<p>Other objects.</p>
+
+</div>
+<p>
+
+
+
+<form>
+  E-mail:
+  <input type="email" name="email">
+</form>
+<p>
+
+<form>
+  Search Google:
+  <input type="search" name="googlesearch">
+</form>
+<p>
+
+
+<form>
+  Telephone:
+  <input type="tel" name="usrtel">
+</form>
+<p>
+
+<form>
+  Add your homepage:
+  <input type="url" name="homepage">
+</form>
+<p>
+
+
+
+<div style="background-color:black; color:white; padding:5px;">
+
+<h2>List</h2>
+<p>List objects display information on the page in a structured way.</p>
+
+</div>
+<p>
+
+<ul>
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+<p>
+
+
+<ul style="list-style-type:disc">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+<p>
+
+<ul style="list-style-type:circle">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+<p>
+
+<ul style="list-style-type:square">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+<p>
+
+<ul style="list-style-type:none">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ul>
+<p>
+
+<ol>
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+<p>
+
+<ol type="1">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+<p>
+
+<ol type="A">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+<p>
+
+<ol type="a">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+<p>
+
+<ol type="I">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+<p>
+
+<ol type="i">
+  <li>Coffee</li>
+  <li>Tea</li>
+  <li>Milk</li>
+</ol>
+<p>
+
+<dl>
+  <dt>Coffee</dt>
+  <dd>- black hot drink</dd>
+  <dt>Milk</dt>
+  <dd>- white cold drink</dd>
+</dl>
+<p>
+
+<ul>
+  <li>Coffee</li>
+  <li>Tea
+    <ul>
+      <li>Black tea</li>
+      <li>Green tea</li>
+    </ul>
+  </li>
+  <li>Milk</li>
+</ul>
+<p>
+
+
+<h2>Horizontal List</h2>
+<p>
+
+<ul id="menu">
+  <li>HTML</li>
+  <li>CSS</li>
+  <li>JavaScript</li>
+  <li>PHP</li>
+</ul> 
+<p>
+
+
+
+
+</body>
+</html>
+

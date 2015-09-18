@@ -1,0 +1,10 @@
+Path,Test Case ID,Description,Step Name,Step Action,Expected Results
+CFS Tests,T101,Notification - Send File - Override,Step 1,Log into Banking Portal Application,Successfully logged into Portal
+CFS Tests,T101,Notification - Send File - Override,Step 2,Click Notifications link in System Configuration menu,Navigates to Financial Institution - Configure Notifications - Employee Manual To-Do Notifications
+,T101,Notification - Send File - Override,,Click Send File transaction type link,Navigates to Send File notification
+220000000001,T101,Notification - Send File - Override,Step 4,Click Override button,Override screen is displayed
+CFS Tests,T101,Notification - Send File - Override,Step 5,Alter Notification Title text,Notification title can be edited
+CFS Tests,T101,Notification - Send File - Override,,"Alter Notification Content using a variety of text, lables and variables",Notification content can be edited
+CFS Tests,T101,Notification - Send File - Override,Step 7,Click Save button,Changes to title and content are saved correctly
+CFS Tests,T101,Notification - Send File - Override,Step 8,Verify an Employee Recipient exists or add an employee ,Recipient can be added or previously exists
+CFS Tests,T101,Notification - Send File - Override,Step 9,Perform Send File transaction in CFE,Send file transaction properly sends a notification to recipient(s)
