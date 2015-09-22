@@ -57,7 +57,7 @@ public class  FeeHelper {
 		 * */
 		
 		// Check the highest level  of the remit_fee.type rule
-		List< Map<String, String>> feeRules = RuleHelper.GetRuleValueByRuleName(BusinessID, "remit_fee.types", connection); 
+		//List< Map<String, String>> feeRules = RuleHelper.GetRuleValueByRuleName(BusinessID, "remit_fee.types", connection); 
 		
 		
 		
@@ -67,13 +67,13 @@ public class  FeeHelper {
 		boolean flag= false;
 		List< Map<String, String>> fees = null;
 		try {	
-			
+			String query = "";
 			ResultSet rs = Database_Connection.executeDatabaseQuery(query,connection);
-			rules = new ArrayList<>();
-			while(rs.next()){
+			//rules = new ArrayList<>();
+		/*	while(rs.next()){
 				flag=true;
 				Map<String, String> ruleRecord = new HashMap<String, String>();
-				ruleRecord.put("ruleNameID", rs.getString("rule_name_id"));
+				feeRecord.put("ruleNameID", rs.getString("rule_name_id"));
 				ruleRecord.put("ruleName", rs.getString("rule_name"));
 				ruleRecord.put("ruleValue", rs.getString("rule_value"));
 				ruleRecord.put("multyValueOrder", rs.getString("MULTI_VALUE_ORDER"));
@@ -81,7 +81,7 @@ public class  FeeHelper {
 				ruleRecord.put("activeFrom", rs.getString("active_from_dtm"));
 				ruleRecord.put("activeTo", rs.getString("active_to_dtm"));
 				rules.add(ruleRecord);
-			}
+			}*/
 
 		}catch (SQLException e){
 
@@ -91,16 +91,16 @@ public class  FeeHelper {
 
 		}else {
 
-			return rules;
+			return fees;
 		}
 		
 			
 		
 	}
-	
+	/*
 	public static List< Map<String, String>> getHighestFeeRuleValues (List< Map<String, String>> fees){
 		List< Map<String, String>> fees = null;
 	}
-
+*/
 
 }

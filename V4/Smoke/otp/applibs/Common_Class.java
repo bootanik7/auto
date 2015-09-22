@@ -65,17 +65,36 @@ public class Common_Class {
 	public static List<String> collectdivision_ids() 
 	{
 		List<String> getdivids=new ArrayList<String>();
-		if(!V4prop.get("MAM_ACH_Types").toString().trim().contains("NA")) {
-
-			String[] str=V4prop.get("MAM_ACH_Types").toString().trim().split(",");
+		String[] str = null;
+		if(!V4prop.get("MAM_ACH_Types").toString().trim().contains("NA")||!V4prop.get("NON_MAM_ACH_Types").toString().trim().contains("NA")) {
+           if(!V4prop.get("MAM_ACH_Types").toString().trim().contains("NA")) {
+        	    str=V4prop.get("MAM_ACH_Types").toString().trim().split(",");
+           }
+           else {
+        	    str=V4prop.get("NON_MAM_ACH_Types").toString().trim().split(",");
+           }
 			for(int P=0;P<=str.length-1;P++)// iterate the business ids to get business id
 			{
-
 				String[] splittpye=str[P].split("-");
 				getdivids.add(splittpye[0]);
 			}
 
+		} else if(str==null && !V4prop.get("MAM_ACC_Types").toString().trim().contains("NA")|| !V4prop.get("NON_MAM_CC_Types").toString().trim().contains("NA")) {
+			
+			  if(!V4prop.get("MAM_CC_Types").toString().trim().contains("NA")) {
+	        	    str=V4prop.get("MAM_CC_Types").toString().trim().split(",");
+	           }
+	           else {
+	        	    str=V4prop.get("NON_MAM_CC_Types").toString().trim().split(",");
+	           }
+				for(int P=0;P<=str.length-1;P++)// iterate the business ids to get business id
+				{
+					String[] splittpye=str[P].split("-");
+					getdivids.add(splittpye[0]);
+				}
+
 		}
+		
 		return getdivids;
 
 	}
@@ -145,7 +164,7 @@ public class Common_Class {
 		account=Database_query_Manager.getvalidationid(query,connection.get("RTDSconconconnection"));
 
 		String getminmax="select  min(MAX_ACCOUNT_NUM_LENGTH) as min,max(MAX_ACCOUNT_NUM_LENGTH) as max from rtds_account_num_pattern where validation_rule_set_id  in ("+account.get("VALIDATION_RULE_SET_ID")+") and ACCOUNT_NUMBER_MASK not like '%null%'order by validation_rule_set_id desc";
-		account=Database_query_Manager.getminmaxacc(getminmax,connection.get("RTDSconconconnection"));
+		account.putAll(Database_query_Manager.getminmaxacc(getminmax,connection.get("RTDSconconconnection")));
 
 		int min=Integer.parseInt(account.get("MIN"));
 		int max=Integer.parseInt(account.get("MAX"));
@@ -239,13 +258,19 @@ public class Common_Class {
 	public static Map<String,Connection> connectDB() throws  SQLException, ClassNotFoundException 
 	{
 		Map<String,Connection>getconnection= new HashMap<String,Connection>();
+	try {
+		
 		Connection D2con=Database_query_Manager.connect_DatabaseD2QA(Common_Class.V4DBprop);
 		Connection IAcon=Database_query_Manager.connect_DatabaseIAQA(Common_Class.V4DBprop);
 		Connection RTDScon=Database_query_Manager.connect_DatabaseRTDSQA(Common_Class.V4DBprop);
 		getconnection.put("D2connection", D2con);
 		getconnection.put("IAconconnection", IAcon);
 		getconnection.put("RTDSconconconnection", RTDScon);
+	}catch(Exception e) {
+	  Log.errorHandler("Failed to create database connection");
+	}
 		return getconnection;
+		
 	}
 
 	/**This Methods returns the MAM account numbers
@@ -313,6 +338,21 @@ public class Common_Class {
 		String[] Types=null;
 		if(!V4prop.get("ACH_APP_Level").equals("NA")) {
 			String ACH_Type=V4prop.get("ACH_APP_Level").toString().trim();
+			Types =V4prop.get(ACH_Type).toString().split(",");
+
+		}
+		return Types;
+
+	}
+	
+	
+	/**This method returns the CC Types
+	 * @return
+	 */
+	public static String[] getCCtypes() {
+		String[] Types=null;
+		if(!V4prop.get("CC_APP_Level").equals("NA")) {
+			String ACH_Type=V4prop.get("CC_APP_Level").toString().trim();
 			Types =V4prop.get(ACH_Type).toString().split(",");
 
 		}

@@ -3,12 +3,14 @@ package  V4.Regression.client_console.applibs;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.testng.SkipException;
 
+import V4.Smoke.client_console.applibs.ClientConsole_ACHPayementEntry_Page;
 import V4.Smoke.client_console.scripts.Common_Class_clientConsole;
 import V4.Smoke.otp.applibs.Common_Class;
 import core.libs.Excel;
@@ -29,9 +31,23 @@ public class V4_CC_Payment {
 	public String ACH_types = null;
 	public List<String> accountNumbersList = null;
 	public String businessID = null;
+	public String DefaultBusinessID = null;
 	public List< Map<String, String>> billerRecords = null;
 	public Map<String, String> accounts = new HashMap<>();
 	public Map<String,String> Bankdetails = null;
+	public static final Map<String, String> mappedBankDetails = createBankDetailsMap();
+	
+	// mapping fileds from Regress_V4_CC_ACH_Payment.ValidationXMLFile and already exists map for Payment detail
+	private static Map<String, String> createBankDetailsMap() {
+		Map<String, String>  mapRecord = new HashMap<String, String>();
+		mapRecord.put("bankAccount.routingNumber", "Routing Number");
+		mapRecord.put("bankAccount.bankAccountNumber", "Bank Account Number");
+		mapRecord.put("bankAccount.accountAddress1", "address1");
+		mapRecord.put("account_address_2", "address2");
+		mapRecord.put("account_city", "city");
+		mapRecord.put("account_postal_code", "Postal Code");
+		return Collections.unmodifiableMap(mapRecord);
+	}
 	
 	
 	/*
@@ -43,6 +59,10 @@ public class V4_CC_Payment {
 	 * "ACH_H=Personal Savings,Business Checking"
 	 * getach = [Personal Savings,Business Checking]
 	 */
+	
+	public void MapV4_CC_Payment_BankDetails(){
+		
+	}
 	
 	
 	public V4_CC_Payment(String MAMTYPE, int size, String sheetname, String testCases, Map<String,Connection>connection) throws ClassNotFoundException, SQLException, InterruptedException  {
@@ -60,6 +80,8 @@ public class V4_CC_Payment {
 					String division_name = null;
 				
 					String[]ACH_types= Common_Class.V4prop.get(MAMTYPE).toString().trim().split(",");//get the MAMtype
+					this.DefaultBusinessID = Common_Class.V4prop.get("DefaultBusinessID").toString().trim();
+					
 					for(int P=0;P<=ACH_types.length-1;P++)// iterate the business ids to get business id
 					{
 
@@ -148,6 +170,11 @@ public class V4_CC_Payment {
 		{
 			Log.errorHandler("Error occurred during loading data for  " + MAMTYPE +" Payment.",e);
 		}
+		
+
+			
+			
+		
 	}
 
 	

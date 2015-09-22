@@ -45,16 +45,67 @@ import core.libs.Platform;
 public class  RuleHelper {
 	
 
-	public static List< Map<String, String>> GetRuleValueByRuleName(String BusinessID, String RuleName, boolean exact, Connection connection ){
+	public static  HashMap<String, String> GetRuleValueExactlyByRuleName(String BusinessID, String RuleName, Connection connection ){
 		
 		
-		String like_statement =  exact ?  "and n.rule_name = '"+ RuleName +"'" : "and n.rule_name like '%"+ RuleName +"%'" ; 
+				
+		String query="select v.rule_name_id, n.rule_name, v.rule_value,v.MULTI_VALUE_ORDER,"+ 
+		"v.business_id, v.active_from_dtm, v.active_to_dtm "+
+		"from ia_live_rule_value v, ia_rule_name n "+
+		"where v.rule_name_id =n.rule_name_id "+
+		"and v.active_to_dtm is null " + 
+		"and n.rule_name = '"+RuleName +"' "+
+		"and  v.business_id = "+ BusinessID + 
+		" order by v.active_to_dtm desc";
+			
+		
+		boolean flag= false;
+		 HashMap<String, String> rules = new HashMap<String,String>();;
+		try {	
+			
+			ResultSet rs = Database_Connection.executeDatabaseQuery(query,connection);
+	
+			while(rs.next()){
+				flag=true;
+		
+				rules.put("ruleNameID", rs.getString("rule_name_id"));
+				rules.put("ruleName", rs.getString("rule_name"));
+				rules.put("ruleValue", rs.getString("rule_value"));
+				rules.put("multyValueOrder", rs.getString("MULTI_VALUE_ORDER"));
+				rules.put("businessID", rs.getString("business_id"));
+				rules.put("activeFrom", rs.getString("active_from_dtm"));
+				rules.put("activeTo", rs.getString("active_to_dtm"));
+			
+			}
+
+		}catch (SQLException e){
+
+		}
+		if(!flag){
+			return null;
+
+		}else {
+
+			return rules;
+		}
+		
+	}
+	
+	
+	
+public static List< Map<String, String>> GetRuleValuesLikeRuleName(String BusinessID, String RuleName, Connection connection ){
+		
+		
+		 
 		
 		String query="select v.rule_name_id, n.rule_name, v.rule_value,v.MULTI_VALUE_ORDER,"+ 
 		"v.business_id, v.active_from_dtm, v.active_to_dtm "+
 		"from ia_live_rule_value v, ia_rule_name n "+
 		"where v.rule_name_id =n.rule_name_id "+
-		"and v.active_to_dtm is null " + like_statement;
+		"and v.active_to_dtm is null " +
+		"and n.rule_name like '%"+ RuleName +"%' " +
+		"and  rv.business_id = "+BusinessID +
+		" order by v.active_to_dtm desc";
 		
 	
 		
@@ -89,5 +140,8 @@ public class  RuleHelper {
 		}
 		
 	}
+
+
+
 		
 	}

@@ -101,7 +101,8 @@ public class Client_ConsoleLogin_Page {
     	 SubmitButton().click();
      }
      public static Link PaymentEntry_link(){
-		 return new Link("//*[contains(text(),'Payment Entry')]");
+		return new Link("//*[contains(text(),'  PAYMENT ENTRY  ')]");
+    	 // return new Link("//*[contains(text(),'Payment Entry')]");
 		 }
      public static void click_paymentEntry_link(){
  	    PaymentEntry_link().click();}

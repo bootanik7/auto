@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry excluding="V4_Mats/|advantage/|applibs/|apps/|apsf/|architect/|branch/|cg/|eb/|globaltrade/|lfin/|mobile/|newfolder/|opay/|pkg/|postilion/|results/|retail/|sctm/|src/|test-output/|tosup/|trade/|uob/|vag00/|vca/|zions/" kind="src" path=""/>
+	<classpathentry excluding="V4_Mats/|advantage/|applibs/|apps/|apsf/|architect/|branch/|cg/|eb/|globaltrade/|lfin/|mobile/|newfolder/|opay/|pkg/|postilion/|results/|retail/|sctm/|src/|test-output/|tosup/|trade/|uob/|vag00/|vca/|zions/|V4/Smoke/otp/applibs/Common_Class_old.java" kind="src" path=""/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="lib" path="pkg/core_20150630_1.jar"/>
 	<classpathentry exported="true" kind="lib" path="pkg/dom4j-1.6.1.jar"/>
