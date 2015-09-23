@@ -1,0 +1,287 @@
+<form name="/submitBankPaymentEntry">
+    <field property="requestedPaymentDate" indexedListProperty="payments" depends="date,spaces,futureDateExceeded,acceptPayment">
+      <msg name="date" key="errors.requested_payment_date.date"/>
+      <msg name="spaces" key="errors.requested_payment_date.date"/>
+      <msg name="futureDateExceeded" key="errors.requested_payment_date.future_date_exceeded"/>
+    
+      
+      <var>
+        <var-name>datePatternStrict</var-name>
+        <var-value>MM/dd/yyyy</var-value>
+      </var>
+    </field>
+     <field property="emailAddress" depends="email,validwhen">
+      <msg name="email" key="errors.email_address.email"/>
+      <msg name="validwhen" key="errors.payment.emailaddress.validwhen" resource="true"/>
+      <var>
+        <var-name>test</var-name>
+        <var-value> (
+      (emailAddress != null)
+              or
+              (
+                 (emailAddress == null)
+                 and
+                 (emailAddressFlag != null)
+              )
+
+                   )
+        </var-value>
+      </var>
+    </field>
+    <field property="remitAmount" indexedListProperty="payments" depends="double, doubleRange, maximumMAMAmount, minimumMAMAmount">
+      <msg name="double" key="errors.remit_amount.double"/>
+      <msg name="doubleRange" key="errors.remit_amount.doublerange"/>
+      <msg name="maximumMAMAmount" key="errors.remit_amount.maximum_mam_amount"/>
+      <msg name="minimumMAMAmount" key="errors.remit_amount.minimum_mam_amount"/>
+      <arg0 name="doubleRange" key="${var:min}" resource="false"/>
+      <arg1 name="doubleRange" key="${var:max}" resource="false"/>
+      <var>
+        <var-name>min</var-name>
+        <var-value>0.00</var-value>
+      </var>
+      <var>
+        <var-name>max</var-name>
+        <var-value>999999999999.99</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.bankAccountType" depends="required,mask">
+      <msg name="required" key="errors.bank_account_type.required"/>
+      <msg name="mask" key="errors.bank_account_type.mask"/>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${bankaccounttype}</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.routingNumber" depends="routingnumberrequired, routingnumberpattern">
+      <msg name="routingnumberrequired" key="errors.routing_number.required"/>
+      <msg name="routingnumberpattern" key="errors.routing_number.mask"/>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${routingnumber}</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.bankAccountNumber" depends="required,bankaccountminlength,bankaccountmaxlength,bankaccountpattern">
+      <msg name="required" key="errors.bank_account_number.required"/>
+      <msg name="bankaccountminlength" key="errors.bank_account_number.minlength"/>
+      <msg name="bankaccountmaxlength" key="errors.bank_account_number.maxlength"/>
+      <msg name="bankaccountpattern" key="errors.bank_account_number.mask"/>
+      <arg0 name="bankaccountminlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="bankaccountmaxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>17</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${alphanumeric}</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.accountHolderName" depends="required,minlength,maxlength,mask">
+<msg name="required" key="errors.account_holder_name.required"/>
+      <msg name="minlength" key="errors.account_holder_name.minlength"/>
+      <msg name="maxlength" key="errors.account_holder_name.maxlength"/>
+      <msg name="mask" key="errors.account_holder_name.mask"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>45</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allnamechars}</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.accountAddress1" depends="minlength,maxlength,mask,validwhen">
+      <msg name="minlength" key="errors.account_address_1.minlength"/>
+      <msg name="maxlength" key="errors.account_address_1.maxlength"/>
+      <msg name="mask" key="errors.account_address_1.mask"/>
+      <msg name="validwhen" key="errors.account_address_1.validwhen"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>64</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+      <var>
+        <var-name>test</var-name>
+        <var-value>((((bankAccount.accountCity == null) and (bankAccount.accountState == null)) and (bankAccount.accountPostalCode == null)) or (*this* != null))</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.accountAddress2" depends="minlength,maxlength,mask,validwhen">
+      <msg name="minlength" key="errors.account_address_2.minlength"/>
+      <msg name="maxlength" key="errors.account_address_2.maxlength"/>
+      <msg name="mask" key="errors.account_address_2.mask"/>
+      <msg name="validwhen" key="errors.account_address_2.validwhen"/>
+      <arg0 name="validwhen" key="message_key.label.account_address_1" resource="false"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>64</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+      <var>
+        <var-name>test</var-name>
+        <var-value>((bankAccount.accountAddress1 != null) or ((bankAccount.accountAddress1 == null) and (*this* == null)))</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.accountCity" depends="minlength,maxlength,mask,validwhen">
+      <msg name="minlength" key="errors.account_city.minlength"/>
+      <msg name="maxlength" key="errors.account_city.maxlength"/>
+      <msg name="mask" key="errors.account_city.mask"/>
+      <msg name="validwhen" key="errors.account_city.validwhen"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>32</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+      <var>
+        <var-name>test</var-name>
+        <var-value>((((bankAccount.accountAddress1 == null) and (bankAccount.accountState == null)) and (bankAccount.accountPostalCode == null)) or (*this* != null))</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.accountState" depends="minlength,maxlength,mask,validwhen">
+      <msg name="minlength" key="errors.account_state_prov.minlength"/>
+     <msg name="maxlength" key="errors.account_state_prov.maxlength"/>
+      <msg name="mask" key="errors.account_state_prov.mask"/>
+      <msg name="validwhen" key="errors.account_state_prov.validwhen"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>32</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${alpha}</var-value>
+      </var>
+      <var>
+        <var-name>test</var-name>
+        <var-value>((((bankAccount.accountAddress1 != null) and (bankAccount.accountCity == null)) and (bankAccount.accountPostalCode != null)) or (*this* != null))</var-value>
+      </var>
+    </field>
+    <field property="bankAccount.accountPostalCode" depends="minlength,maxlength,mask,validwhen">
+      <msg name="minlength" key="errors.account_postal_code.minlength"/>
+      <msg name="maxlength" key="errors.account_postal_code.maxlength"/>
+      <msg name="mask" key="errors.account_postal_code.mask"/>
+      <msg name="validwhen" key="errors.account_postal_code.validwhen"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>1</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>9</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+      <var>
+        <var-name>test</var-name>
+        <var-value>((((bankAccount.accountAddress1 != null) and (bankAccount.accountCity == null)) and (bankAccount.accountState != null)) or (*this* != null))</var-value>
+      </var>
+    </field>
+    <field property="feeWaiveLogin" depends="createPaymentFeeWaiveApprovalRequired,mask,feeWaiveApprovalLoginEqual">
+      <msg name="createPaymentFeeWaiveApprovalRequired" key="errors.login.fee_waive_approval_required"/>
+      <msg name="mask" key="errors.fee_waive_approval_required.invalid_character"/>
+      <msg name="feeWaiveApprovalLoginEqual" key="errors.login.fee_waive_approval_login_equal"/>
+      <arg0 name="mask" key="message_key.label.login" resource="false"/>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+    </field>
+    <field property="feeWaivePassword" depends="createPaymentFeeWaiveApprovalRequired,mask">
+      <msg name="createPaymentFeeWaiveApprovalRequired" key="errors.password.fee_waive_approval_required"/>
+      <msg name="mask" key="errors.fee_waive_approval_required.invalid_character"/>
+      <arg0 name="mask" key="message_key.label.password" resource="false"/>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+    </field>
+    <field property="createPaymentLogin" depends="createPaymentApprovalRequired,mask, createPaymentApprovalLoginEqual">
+      <msg name="createPaymentApprovalRequired" key="errors.login.create_payment_approval_required"/>
+      <msg name="mask" key="errors.create_payment_approval_required.invalid_character"/>
+      <msg name="createPaymentApprovalLoginEqual" key="errors.login.create_payment_approval_login_equal"/>
+      <arg0 name="mask" key="message_key.label.login" resource="false"/>
+      <var>
+       <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+    </field>
+    <field property="createPaymentPassword" depends="createPaymentApprovalRequired,mask">
+      <msg name="createPaymentApprovalRequired" key="errors.password.create_payment_approval_required"/>
+      <msg name="mask" key="errors.create_payment_approval_required.invalid_character"/>
+      <arg0 name="mask" key="message_key.label.password" resource="false"/>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${allchars}</var-value>
+      </var>
+    </field>
+    <field property="cardNumber" depends="minlength,maxlength,mask,creditCard">
+      <msg name="minlength" key="errors.card_number.minlength"/>
+      <msg name="maxlength" key="errors.card_number.maxlength"/>
+      <msg name="mask" key="errors.card_number.mask"/>
+      <msg name="creditCard" key="message.card_number_invalid"/>
+      <arg0 name="minlength" key="${var:minlength}" resource="false"/>
+      <arg1 name="maxlength" key="${var:maxlength}" resource="false"/>
+      <var>
+        <var-name>minlength</var-name>
+        <var-value>14</var-value>
+      </var>
+      <var>
+        <var-name>maxlength</var-name>
+        <var-value>19</var-value>
+      </var>
+      <var>
+        <var-name>mask</var-name>
+        <var-value>${numeric}</var-value>
+      </var>
+    </field>
+   <field property="remitFields" indexedListProperty="payments" depends="requiredRemitFields">
+    <msg name="requiredRemitFields" key="errors.field.required"/>
+   </field>
+    
+  </form>
+  

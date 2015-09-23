@@ -128,7 +128,7 @@ public static void loadProperties(){
 		String xmlPath = null;
 		String ruleName = null;
 		try{
-			xmlPath = PaymentProp.getProperty("gsAutomationValidationXMLPath");
+			xmlPath = PaymentProp.getProperty("gsAutomationValidationXMLPath")+ValidationXMLFile;
 			ruleName = XMLHelper.getPaymentEntryRuleNameFromXML(xmlPath, fieldName, checkType);
 
 		
