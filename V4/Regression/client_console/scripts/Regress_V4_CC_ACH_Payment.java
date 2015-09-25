@@ -28,8 +28,10 @@ import V4.Regression.client_console.applibs.helpers.RuleHelper;
 import V4.Regression.client_console.applibs.helpers.XMLHelper;
 import V4.Smoke.client_console.applibs.ClientConsole_ACHPayementEntry_Page;
 import V4.Smoke.client_console.applibs.Client_ConsoleLogin_Page;
+import V4.Smoke.otp.applibs.Baseclass_otp;
 import V4.Smoke.otp.applibs.Common_Class;
 import V4.Smoke.otp.applibs.Database_query_Manager;
+import V4.Smoke.otp.applibs.OTP_FundingInfo_Page;
 import core.libs.Browser;
 import core.libs.Excel;
 import core.libs.FileIO;
@@ -61,7 +63,7 @@ public class Regress_V4_CC_ACH_Payment {
 	 */
 	@BeforeClass
 
-	public  void setUp() throws InterruptedException, Exception, SQLException {
+	public   static void setUp() throws InterruptedException, Exception, SQLException {
 		try {
 			Log.gsScriptName = Thread.currentThread().getStackTrace()[1].getClassName();
 			Log.gsScriptDescription = "Test Verifies payment can not be happened without mandatory valid field values.";
@@ -79,13 +81,13 @@ public class Regress_V4_CC_ACH_Payment {
 		
 			//String date = Common_Class.getsystemdate();
 
-			if (Test_login.i == 0)
+			/*if (Test_login.i == 0)
 
 			{
 				Log.logScriptInfo("Login to the system");
 				Common_Class_clientConsole.client_console_login(conn);
 				Test_login.i = 1;
-			}
+			}*/
 
 		} catch (Exception e) {
 			// Standard error handling routine
@@ -269,6 +271,58 @@ public static void loadProperties(){
 
 		return result;
 	}
+	
+	public static void NoN_MaMLoginCC()
+	{
+		if(Common_Class.V4prop.get("NON_MAM_ACH_Types").toString().contains("NA")){
+			
+			throw new SkipException("No Non MAM Details Present");
+		}
+		try {
+			
+		   List<String> list;
+			
+			Map<String, String>accountinfo=null;
+		
+			String[] getmamdivdid = Common_Class.V4prop.get("NON_MAM_ACH_Types").toString().split(",");
+			
+			int first = 0;
+			accountinfo=Common_Class.getaccinfo(conn);
+					
+
+			
+				try
+				{
+
+					String[] getid=getmamdivdid[first].toString().split("-");
+
+					Log.startTestCase("Started Executing Non MAM Login for "+getid[0]+" division business id ");
+
+					String ID=getid[0];
+					list=Common_Class.gen_num_acc_num(ID,conn);
+					
+					Baseclass_otp.getNonMamaccount(ID,list.get(first),accountinfo,conn);
+
+					String Accountinfotext=OTP_FundingInfo_Page.accNumVisibleText();
+
+					Common_Class.altVerify(list.get(first), Accountinfotext, true);
+					
+
+				} catch(Exception e)
+				{
+					Log.errorHandler("Error occurred during MAM LOGIN Testcase.",e);
+
+					Browser.close();
+				}
+		
+			
+			
+		}catch(Exception e)
+		{
+			Log.errorHandler("Error occurred during MAM LOGIN Testcase.",e);
+		}
+	}
+	
 
 	@AfterClass
 	/**
