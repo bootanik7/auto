@@ -175,8 +175,8 @@ public class Common_Class {
 		min=min+1;
 
 		max=max-1;
-		String accountMask = account.get("ACCOUNT_NUMBER_MASK");
 
+		String accountMask = account.get("ACCOUNT_NUMBER_MASK");
 		Integer[] values={min-1,min,max-1,max};
 
 		List<String>list = new ArrayList<String>();

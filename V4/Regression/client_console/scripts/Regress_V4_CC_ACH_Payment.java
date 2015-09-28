@@ -4,6 +4,7 @@ import V4.Smoke.client_console.scripts.ClientConsole_ACH_Payment;
 import V4.Smoke.client_console.scripts.CommonPayment_clientconsole;
 import V4.Smoke.client_console.scripts.Common_Class_clientConsole;
 import V4.Smoke.client_console.scripts.Test_login;
+import V4.Smoke.enrollment.applibs.Erm_Login_Page;
 
 import java.io.File;
 import java.sql.Connection;
@@ -32,6 +33,7 @@ import V4.Smoke.otp.applibs.Baseclass_otp;
 import V4.Smoke.otp.applibs.Common_Class;
 import V4.Smoke.otp.applibs.Database_query_Manager;
 import V4.Smoke.otp.applibs.OTP_FundingInfo_Page;
+import V4.Smoke.otp.applibs.OTP_Login_Page;
 import core.libs.Browser;
 import core.libs.Excel;
 import core.libs.FileIO;
@@ -283,12 +285,12 @@ public static void loadProperties(){
 		   List<String> list;
 			
 			Map<String, String>accountinfo=null;
-		
+			String URL = ";"
 			String[] getmamdivdid = Common_Class.V4prop.get("NON_MAM_ACH_Types").toString().split(",");
 			
 			int first = 0;
 			accountinfo=Common_Class.getaccinfo(conn);
-					
+			
 
 			
 				try
@@ -296,16 +298,19 @@ public static void loadProperties(){
 
 					String[] getid=getmamdivdid[first].toString().split("-");
 
-					Log.startTestCase("Started Executing Non MAM Login for "+getid[0]+" division business id ");
+					Log.startTestCase("Started Executing Non MAM Login for "+getid[first]+" division business id ");
 
-					String ID=getid[0];
+					String ID=getid[first];
 					list=Common_Class.gen_num_acc_num(ID,conn);
 					
-					Baseclass_otp.getNonMamaccount(ID,list.get(first),accountinfo,conn);
-
-					String Accountinfotext=OTP_FundingInfo_Page.accNumVisibleText();
-
-					Common_Class.altVerify(list.get(first), Accountinfotext, true);
+					URL= Common_Class.V4prop.getProperty("clientConsolURL")+Common_Class.V4prop.getProperty("Business_id");
+					Browser.start();
+					Browser.loadURL(URL,Log.giAutomationShortTO);
+					
+					NonMAMDataEntry(ID, list.get(first), accountinfo, conn.get("IAconconnection"));
+					
+					
+				
 					
 
 				} catch(Exception e)
@@ -324,6 +329,46 @@ public static void loadProperties(){
 	}
 	
 
+	public static void NonMAMDataEntry(String Division_business_id,String Account_num,Map<String, String>accountinfo,Connection connection) throws SQLException {
+		String query1="select * from IA_LIVE_Business where  BUSINESS_ID in ( "+Division_business_id+") and ROWNUM =1 order by ACTIVE_STATUS_DTM desc";
+		
+		getdata=Database_query_Manager.get_IA_LIVE_Business(query1,connection);
+
+		String Division=getdata.get("PRIMARY_NAME");
+
+		OTP_Login_Page.EnterAccountText(Account_num);
+
+		if(Common_Class.V4prop.get("ZipCode").toString().contains("yes")) 
+		{
+
+			OTP_Login_Page.EnterAccountinfoText(accountinfo.get("BILLING_POSTAL_CODE"));
+
+		} else if(Common_Class.V4prop.get("Division").toString().contains("yes"))
+
+		{
+			OTP_Login_Page.EnterAccountinfoText(Division_business_id);
+		}
+		else if(Common_Class.V4prop.get("Accountinfo").toString().contains("yes"))
+		{
+			OTP_Login_Page.EnterAccountinfoText(accountinfo.get("ACCOUNT_INFO_01"));
+		}
+
+		if(OTP_Login_Page.isAccountonf2present()){
+			OTP_Login_Page.EnterAccountinfo2Text(accountinfo.get("ACCOUNT_INFO_02"));
+		}
+		 if(OTP_Login_Page.isdivisionpresent())
+		{
+			OTP_Login_Page.selectdivision(Division);
+		}
+		 if(Erm_Login_Page.iscontinepresent()){
+				
+			 Erm_Login_Page.click_on_contine();
+		}
+		else {
+	    OTP_Login_Page.clickbutton();
+		}
+	}
+	
 	@AfterClass
 	/**
 	 * This function ends the test, calculates and logs the test results and
@@ -338,4 +383,8 @@ public static void loadProperties(){
 		Log.terminate();
 
 	}
+	
+	
+	
+	
 }
