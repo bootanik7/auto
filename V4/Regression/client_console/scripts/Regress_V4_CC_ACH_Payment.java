@@ -54,7 +54,7 @@ public class Regress_V4_CC_ACH_Payment {
 	
 	public static String  RulePropFile = Platform.getCurrentProjectPath() + "V4" +Platform.getFileSeparator() + "Rules.properties";
 	public static String  PaymentPropFile = Platform.getCurrentProjectPath() + "V4" +Platform.getFileSeparator() + "Payment.properties";
-	public static String PaymentTestDataFile = "Payment_testdata.xlsx";
+	public static String PaymentTestDataFile = "Payment_testdata_test.xls";
 	public static String ValidationXMLFile = "validation-paymententry.xml";
 	int size = 0;
 
@@ -77,19 +77,12 @@ public class Regress_V4_CC_ACH_Payment {
 			Log.logBanner("Negotive scenarious for creating Payment testcase for MAM/NonMAM");
 
 			Common_Class_clientConsole.set_test_data_path();
+			
 			Common_Class.loadDBproperties();
+			loadProperties();
 			conn = Common_Class.connectDB();
-	
 		
-			//String date = Common_Class.getsystemdate();
 
-			/*if (Test_login.i == 0)
-
-			{
-				Log.logScriptInfo("Login to the system");
-				Common_Class_clientConsole.client_console_login(conn);
-				Test_login.i = 1;
-			}*/
 
 		} catch (Exception e) {
 			// Standard error handling routine
@@ -108,15 +101,15 @@ public static void loadProperties(){
 }
 
 	
-	public static Map<String,String> loadTestData(String fieldName,String CheckType){
+	public static Map<String,String> loadTestData(String sheetName,String columnValue){
 	
 		String path = null;
 		Map<String,String> test_data = null; 
+		
 		try{
 			path = PaymentProp.getProperty("gsAutomationTestDataPath")+PaymentTestDataFile;
-			test_data = Excel.getXlsRowDataAsMap(path,fieldName,CheckType);
-			
-		
+			test_data = Excel.getXlsRowDataAsMap(path,sheetName,columnValue);
+				
 		}
 		catch (Exception e) {
 			// Standard error handling routine
@@ -149,12 +142,12 @@ public static void loadProperties(){
 
 
 	public static void createACHPaymentWithNonValidField(String MAMTYPE, String fieldName, String checkType,
-			String invalidValue, String ruleName, int size, String sheetname, String testCases,
+			String invalidValue, String ruleName, int size, String sheetname, String testCaseCode,
 			Map<String, Connection> connection) throws ClassNotFoundException, SQLException, InterruptedException {
 		
 		try {
 			Log.logScriptInfo("Load test data to PaymentDetail object for " + MAMTYPE + " biller");
-			V4_CC_Payment paymentDetail = new V4_CC_Payment(MAMTYPE, size, sheetname, testCases, connection);
+			V4_CC_Payment paymentDetail = new V4_CC_Payment(MAMTYPE, size, sheetname, testCaseCode, connection);
 
 			
 			Log.logScriptInfo("Clear previous field value for " + V4_CC_Payment.mappedBankDetails.get(fieldName));
@@ -169,7 +162,7 @@ public static void loadProperties(){
 
 			Log.logScriptInfo("Trying to create Payment ");
 			ClientConsole_ACHPayementEntry_Page.ACH_Payment_Entry_details(paymentDetail.Bankdetails,
-					paymentDetail.ACH_types);
+					paymentDetail.ACH_Types);
 
 			Log.logScriptInfo("Check error message");
 			Regress_V4_CC_ACH_Payment.verifyPaymentCanNotHappened(ruleName, paymentDetail, connection);
@@ -274,100 +267,39 @@ public static void loadProperties(){
 		return result;
 	}
 	
-	public static void NoN_MaMLoginCC()
+	
+	
+	public static void client_console_login(Map<String,Connection>getconn, String testCaseCode) throws InterruptedException, SQLException
 	{
-		if(Common_Class.V4prop.get("NON_MAM_ACH_Types").toString().contains("NA")){
-			
-			throw new SkipException("No Non MAM Details Present");
-		}
-		try {
-			
-		   List<String> list;
-			
-			Map<String, String>accountinfo=null;
-			String URL = ";"
-			String[] getmamdivdid = Common_Class.V4prop.get("NON_MAM_ACH_Types").toString().split(",");
-			
-			int first = 0;
-			accountinfo=Common_Class.getaccinfo(conn);
-			
-
-			
-				try
-				{
-
-					String[] getid=getmamdivdid[first].toString().split("-");
-
-					Log.startTestCase("Started Executing Non MAM Login for "+getid[first]+" division business id ");
-
-					String ID=getid[first];
-					list=Common_Class.gen_num_acc_num(ID,conn);
-					
-					URL= Common_Class.V4prop.getProperty("clientConsolURL")+Common_Class.V4prop.getProperty("Business_id");
-					Browser.start();
-					Browser.loadURL(URL,Log.giAutomationShortTO);
-					
-					NonMAMDataEntry(ID, list.get(first), accountinfo, conn.get("IAconconnection"));
-					
-					
-				
-					
-
-				} catch(Exception e)
-				{
-					Log.errorHandler("Error occurred during MAM LOGIN Testcase.",e);
-
-					Browser.close();
-				}
+		String URL = null;
+		HashMap<String, String>getdata = null;
+		Connection d2 = null;
 		
-			
-			
-		}catch(Exception e)
-		{
-			Log.errorHandler("Error occurred during MAM LOGIN Testcase.",e);
+		try{
+		
+			Map<String,String> testData = Regress_V4_CC_ACH_Payment.loadTestData("AutoTestCases", testCaseCode);
+					URL= Common_Class.V4prop.getProperty("clientConsolURL")+  testData.get("BusinessID") ;
+		Browser.start();
+		Browser.loadURL(URL,Log.giAutomationShortTO);
+		String business_id="'"+testData.get("BusinessID")+"'";
+		String Update="update sp_identity set PASSWORD_EXPIRY_DT='31-DEC-2020' where business_id="+business_id+" and product_id='1178' and user_id in(select USER_ID from sp_user where business_id ="+business_id+" and product_id=1178 and USER_STATUS_ID=1)and rownum=1";
+		 d2 = getconn.get("D2connection");
+		Database_query_Manager.updateDB(Update,d2);
+		
+		String query="select Login,Password From sp_identity_en where business_id="+business_id+"and product_id=1178 and user_id in(select USER_ID from sp_user where business_id ="+business_id+" and product_id=1178 and USER_STATUS_ID=1)";
+		getdata=Database_query_Manager.getenrollcedentials(query, getconn.get("D2connection"));
+		Client_ConsoleLogin_Page.clientconsole_login(getdata.get("LOGIN"),getdata.get("PASSWORD"));
+		
 		}
-	}
+		catch(Exception e)
+		{
+			Log.errorHandler("Error occurred during logging to system.",e);
+		}
+		}
+	
 	
 
-	public static void NonMAMDataEntry(String Division_business_id,String Account_num,Map<String, String>accountinfo,Connection connection) throws SQLException {
-		String query1="select * from IA_LIVE_Business where  BUSINESS_ID in ( "+Division_business_id+") and ROWNUM =1 order by ACTIVE_STATUS_DTM desc";
-		
-		getdata=Database_query_Manager.get_IA_LIVE_Business(query1,connection);
-
-		String Division=getdata.get("PRIMARY_NAME");
-
-		OTP_Login_Page.EnterAccountText(Account_num);
-
-		if(Common_Class.V4prop.get("ZipCode").toString().contains("yes")) 
-		{
-
-			OTP_Login_Page.EnterAccountinfoText(accountinfo.get("BILLING_POSTAL_CODE"));
-
-		} else if(Common_Class.V4prop.get("Division").toString().contains("yes"))
-
-		{
-			OTP_Login_Page.EnterAccountinfoText(Division_business_id);
-		}
-		else if(Common_Class.V4prop.get("Accountinfo").toString().contains("yes"))
-		{
-			OTP_Login_Page.EnterAccountinfoText(accountinfo.get("ACCOUNT_INFO_01"));
-		}
-
-		if(OTP_Login_Page.isAccountonf2present()){
-			OTP_Login_Page.EnterAccountinfo2Text(accountinfo.get("ACCOUNT_INFO_02"));
-		}
-		 if(OTP_Login_Page.isdivisionpresent())
-		{
-			OTP_Login_Page.selectdivision(Division);
-		}
-		 if(Erm_Login_Page.iscontinepresent()){
-				
-			 Erm_Login_Page.click_on_contine();
-		}
-		else {
-	    OTP_Login_Page.clickbutton();
-		}
-	}
+	
 	
 	@AfterClass
 	/**

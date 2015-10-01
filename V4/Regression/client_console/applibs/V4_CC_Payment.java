@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.testng.SkipException;
 
+import V4.Regression.client_console.scripts.Regress_V4_CC_ACH_Payment;
 import V4.Smoke.client_console.applibs.ClientConsole_ACHPayementEntry_Page;
 import V4.Smoke.client_console.scripts.Common_Class_clientConsole;
 import V4.Smoke.otp.applibs.Common_Class;
@@ -28,7 +29,7 @@ public class V4_CC_Payment {
 
 	
 
-	public String ACH_types = null;
+	public String ACH_Types = null;
 	public List<String> accountNumbersList = null;
 	public String businessID = null;
 	public String DefaultBusinessID = null;
@@ -43,7 +44,7 @@ public class V4_CC_Payment {
 		mapRecord.put("bankAccount.routingNumber", "Routing Number");
 		mapRecord.put("bankAccount.bankAccountNumber", "Bank Account Number");
 		mapRecord.put("bankAccount.accountAddress1", "address1");
-		mapRecord.put("account_address_2", "address2");
+		mapRecord.put("bankAccount.accountAddress2", "address2");
 		mapRecord.put("account_city", "city");
 		mapRecord.put("account_postal_code", "Postal Code");
 		return Collections.unmodifiableMap(mapRecord);
@@ -65,68 +66,68 @@ public class V4_CC_Payment {
 	}
 	
 	
-	public V4_CC_Payment(String MAMTYPE, int size, String sheetname, String testCases, Map<String,Connection>connection) throws ClassNotFoundException, SQLException, InterruptedException  {
+public V4_CC_Payment(String MAMTYPE, int size, String sheetname, String testCaseCode,  Map<String,Connection>connection) throws ClassNotFoundException, SQLException,Exception, InterruptedException  {
 				
-		
-		
-		if(Common_Class.V4prop.get(MAMTYPE).toString().trim().contains("NA")) 
-		{
-			throw new SkipException("No Mam Details Present");
-		}
+	
+	int first = 1;
+	String Type;
+	String division_name = null;
+	
+	Map<String,String> testData = Regress_V4_CC_ACH_Payment.loadTestData("AutoTestCases", testCaseCode);
+	
+	
+		if(testData == null) 
+			throw new Exception("No Test Data in Excell is presented");
 		
 		try{
 			
-					String Type;
-					String division_name = null;
-				
-					String[]ACH_types= Common_Class.V4prop.get(MAMTYPE).toString().trim().split(",");//get the MAMtype
-					this.DefaultBusinessID = Common_Class.V4prop.get("DefaultBusinessID").toString().trim();
+				this.DefaultBusinessID = Common_Class.V4prop.get("DefaultBusinessID").toString().trim();
 					
-					for(int P=0;P<=ACH_types.length-1;P++)// iterate the business ids to get business id
-					{
-
-						String[] splitType=ACH_types[P].split("-");
-											
-						if(splitType.length==1)
-						{ 
-							if(MAMTYPE.matches("MAM_ACH_Types")||MAMTYPE.matches("NON_MAM_ACH_Types")){
-								Type=Common_Class.V4prop.getProperty("ACH_APP_Level").toString().trim();
-
-							} else {
-								Type=Common_Class.V4prop.getProperty("CC_APP_Level").toString().trim();
-							}
-
-						}
-						else {
-							Type=splitType[1];
-
-						}
-
+				switch (MAMTYPE){
+					case "MAM_ACH_Types":
+						Type=testData.get("ACH_Combination").trim();
+						break;
+					case "NON_MAM_ACH_Types":
+						Type=testData.get("ACH_Combination").trim();
+						break;
+					case "NON_MAM_CC_Types":
+						Type=testData.get("CC_Combination").trim();
+						break;
+					case "MAM_CC_Types":
+						Type=testData.get("CC_Combination").trim();
+						break;
+					default:
+							throw new Exception("unexpected MAMTYPE value ");
+													
+					}
+					
 						
 						
-						String[] getach=Common_Class.V4prop.get(Type).toString().trim().split(",");
-						Log.logScriptInfo("Get business_id: "+ splitType[0]);
-						this.businessID = splitType[0]; 
+						this.businessID = testData.get("BusinessID").trim(); 
+						Log.logScriptInfo("Get business_id: "+ this.businessID);
 						
 						
-						if(MAMTYPE.matches("NON_MAM_ACH_Types")||MAMTYPE.matches("NON_MAM_CC_Types"))
+						if(MAMTYPE.contains("NON_MAM"))
 						{
 							Log.logScriptInfo("Get account numbers for NON MAM payment");
 							this.accountNumbersList = Common_Class.gen_num_acc_num(this.businessID,connection);
+							 
+							
 						}
 						else {
 							Log.logScriptInfo("Get mam details for MAM payment ");
-							this.billerRecords=Common_Class.getmamdetails(this.businessID, getach.length,connection);
+							this.billerRecords=Common_Class.getmamdetails(this.businessID, first,connection);
 							
-					
-
 						}
 
+						
+						
+						String[] getach=Type.trim().split(",");
 						
 						for(int i=0;i<=getach.length-1;i++) 
 						{
 							
-							this.ACH_types = getach[i];
+							this.ACH_Types = getach[i];
 							try 
 							{
 								
@@ -163,8 +164,11 @@ public class V4_CC_Payment {
 
 						} 
 					
+				
+					
+					
 
-					}
+					
 
 		}catch(Exception e)
 		{
@@ -176,6 +180,127 @@ public class V4_CC_Payment {
 			
 		
 	}
+	
+	
+
+
+/*	public V4_CC_Payment(String MAMTYPE, int size, String sheetname, String testCases, Map<String,Connection>connection) throws ClassNotFoundException, SQLException, InterruptedException  {
+			
+	
+	
+	if(Common_Class.V4prop.get(MAMTYPE).toString().trim().contains("NA")) 
+	{
+		throw new SkipException("No Mam Details Present");
+	}
+	
+	try{
+		
+				String Type;
+				String division_name = null;
+				Map<String, String> = null;
+				String[]ACH_types= Common_Class.V4prop.get(MAMTYPE).toString().trim().split(",");//get the MAMtype
+				this.DefaultBusinessID = Common_Class.V4prop.get("DefaultBusinessID").toString().trim();
+				
+				for(int P=0;P<=ACH_types.length-1;P++)// iterate the business ids to get business id
+				{
+
+					String[] splitType=ACH_types[P].split("-");
+										
+					if(splitType.length==1)
+					{ 
+						if(MAMTYPE.matches("MAM_ACH_Types")||MAMTYPE.matches("NON_MAM_ACH_Types")){
+							Type=Common_Class.V4prop.getProperty("ACH_APP_Level").toString().trim();
+
+						} else {
+							Type=Common_Class.V4prop.getProperty("CC_APP_Level").toString().trim();
+						}
+
+					}
+					else {
+						Type=splitType[1];
+
+					}
+
+					
+					String[] getach=Common_Class.V4prop.get(Type).toString().trim().split(",");
+					Log.logScriptInfo("Get business_id: "+ splitType[0]);
+					this.businessID = splitType[0]; 
+					
+					
+					if(MAMTYPE.matches("NON_MAM_ACH_Types")||MAMTYPE.matches("NON_MAM_CC_Types"))
+					{
+						Log.logScriptInfo("Get account numbers for NON MAM payment");
+						// = Regress_V4_CC_ACH_Payment.loadTestData(TestCases, "PaymentEntryCheckAddress1NonMAM");
+						 this.accountNumbersList = Common_Class.gen_num_acc_num(this.businessID,connection);
+						 
+						
+						
+						
+					}
+					else {
+						Log.logScriptInfo("Get mam details for MAM payment ");
+						this.billerRecords=Common_Class.getmamdetails(this.businessID, getach.length,connection);
+						
+				
+
+					}
+
+					
+					for(int i=0;i<=getach.length-1;i++) 
+					{
+						
+						this.ACH_types = getach[i];
+						try 
+						{
+							
+							this.Bankdetails=Excel.getXlsRowDataAsMap("ClientConsole_testdata.xls", ""+sheetname+"",getach[i]);
+																					
+							if(MAMTYPE.matches("NON_MAM_ACH_Types")||MAMTYPE.matches("NON_MAM_CC_Types")){
+								String account_number = this.accountNumbersList.get(i);
+								Log.logScriptInfo("Get ACCOUNT_NUMBER for NON MAM payment:"+ account_number);
+								this.accounts.put("ACCOUNT_NUMBER" , account_number);
+							}
+							else {
+								Log.logScriptInfo("Get ACCOUNTS for  MAM payment");
+								this.accounts=billerRecords.get(i);
+							}
+							
+							division_name = Common_Class.getdivisionname(this.businessID, connection);
+							Log.logScriptInfo("Get division name :"+ division_name);
+							this.accounts.put("division_name", division_name);
+
+						
+							if(size<=getach.length)
+							{
+								break;
+							}
+						}
+						catch(Exception e) 
+						{
+							Log.errorHandler("Error occurred during Making MAM ACH Payment.",e);
+
+							
+						}
+						
+						
+
+					} 
+				
+
+				}
+
+	}catch(Exception e)
+	{
+		Log.errorHandler("Error occurred during loading data for  " + MAMTYPE +" Payment.",e);
+	}
+	
+
+		
+		
+	
+}*/
+	
+	
 
 	
 }

@@ -157,15 +157,19 @@ public class Common_Class {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static ArrayList<String> gen_num_acc_num(String Divsion_business_id,Map<String,Connection> connection) throws SQLException {
+	public static ArrayList<String> gen_num_acc_num(String Divsion_business_id,Map<String,Connection> connection) throws SQLException, Exception {
 		Map<String,String> account= new HashMap<String,String>();			
 
+		
 		String query="select * from rtds_validation_rule_set where biller_business_id = "+Divsion_business_id+" and ORIGINATOR_PRODUCT_ID =1158";
 		account=Database_query_Manager.getvalidationid(query,connection.get("RTDSconconconnection"));
 
 		String getminmax="select  min(MAX_ACCOUNT_NUM_LENGTH) as min,max(MAX_ACCOUNT_NUM_LENGTH) as max from rtds_account_num_pattern where validation_rule_set_id  in ("+account.get("VALIDATION_RULE_SET_ID")+") and ACCOUNT_NUMBER_MASK not like '%null%'order by validation_rule_set_id desc";
 		account.putAll(Database_query_Manager.getminmaxacc(getminmax,connection.get("RTDSconconconnection")));
-
+		
+		if(account.get("MIN") == null || account.get("MAX") == null)
+			throw new Exception("There is no MAX_ACCOUNT_NUM_LENGTH rules in DB for biller_business_id = "+Divsion_business_id+" and ORIGINATOR_PRODUCT_ID =1158 ");
+		
 		int min=Integer.parseInt(account.get("MIN"));
 		int max=Integer.parseInt(account.get("MAX"));
 		String getaccountmask= "select * from rtds_account_num_pattern where validation_rule_set_id  in ("+account.get("VALIDATION_RULE_SET_ID")+") and ACCOUNT_NUMBER_MASK not like '%null%' and RowNum =1";
